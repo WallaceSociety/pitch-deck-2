@@ -1,11 +1,9 @@
 <script>
 	import VideoPlayer from './VideoPlayer.svelte';
-	
-	export let onVideoEnd;
 </script>
 
 <div class="video-container">
-	<VideoPlayer onEnded={onVideoEnd} />
+	<VideoPlayer on:ended />
 </div>
 
 <style>
@@ -15,3 +13,4 @@
 		background: black;
 	}
 </style>
+

@@ -1,10 +1,9 @@
 <script>
 	import { writable } from 'svelte/store';
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import VolumeWarning from './video/VolumeWarning.svelte';
 	import { setupVideoEventListeners, handleVideoError } from '$lib/utils/videoPlayerUtils';
-
-	export let onEnded;
+	const dispatch = createEventDispatcher();
 
 	const videoLoaded = writable(false);
 	const hasError = writable(false);
@@ -20,14 +19,14 @@
 	function handleError(e) {
 		$hasError = true;
 		handleVideoError(e);
-		onEnded();
+		dispatch('ended');
 	}
 
 	function handleVideoComplete() {
 		if (!hasTriggeredEnd) {
 			hasTriggeredEnd = true;
 			isPlaying = false;
-			onEnded();
+			dispatch('ended');
 		}
 	}
 
@@ -46,7 +45,6 @@
 	onMount(() => {
 		if (videoElement) {
 			videoElement.load();
-			const cleanup = setupVideoEventListeners(videoElement, handleVideoComplete);
 
 			const timeout = setTimeout(() => {
 				if (!$videoLoaded) {
@@ -56,7 +54,6 @@
 
 			return () => {
 				clearTimeout(timeout);
-				cleanup();
 			};
 		}
 	});
@@ -73,6 +70,7 @@
 			playsinline
 			on:loadeddata={handleLoadedData}
 			on:error={handleError}
+			on:ended
 		>
 			<source src="/videos/intro.mp4" type="video/mp4" />
 			<source src="/videos/intro.webm" type="video/webm" />

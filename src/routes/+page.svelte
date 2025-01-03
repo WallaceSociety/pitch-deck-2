@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte';
 	import { initializeAudio } from '$lib/utils/audioUtils';
 
-	function handleVideoEnded() {
+	function handleVideoEnded(event) {
 		$showSecondScreen = true;
 	}
 
@@ -18,7 +18,7 @@
 
 <div class="container">
 	{#if !$showSecondScreen}
-		<VideoScreen onVideoEnd={handleVideoEnded} />
+		<VideoScreen on:ended={handleVideoEnded} />
 	{:else if !$showMessageScreen}
 		<ContentScreen />
 	{:else if !$showCalculator}
@@ -37,3 +37,4 @@
 		background: white;
 	}
 </style>
+
